@@ -1,0 +1,40 @@
+services:
+  proxy:
+    image: nginx:alpine
+    ports:
+      - 8000:80
+    volumes:
+      - './src:/var/www/html'
+      - './nginx/conf.d/:/etc/nginx/conf.d/'
+    depends_on:
+      - php
+
+  db:
+    image: postgres:alpine
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USERNAME: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - './db:/var/lib/postgresql/data'
+
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:3306
+
+  php:
+    image: php:8.1-fpm-alpine
+    volumes:
+      - './src:/var/www/html'
+    ports:
+      - 8080:80
+    depends_on:
+      - db
+    env_file:
+      - .env
+volumes:
+  db:
