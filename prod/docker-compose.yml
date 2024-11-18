@@ -1,40 +1,25 @@
-services:
-  proxy:
-    image: nginx:alpine
-    ports:
-      - 8000:80
-    volumes:
-      - './src:/var/www/html'
-      - './nginx/conf.d/:/etc/nginx/conf.d/'
-    depends_on:
-      - php
+version: '3.8'
 
+services:
+  php:
+    build: 
+      context: ./php
+      dockerfile: Dockerfile
+    expose:
+      - ${PHP_PORT}
+  
   db:
     image: postgres:alpine
-    restart: always
     environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USERNAME: ${DB_USERNAME}
+      POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-    volumes:
-      - './db:/var/lib/postgresql/data'
-
-
-  adminer:
-    image: adminer
-    restart: always
+      POSTGRES_DB: ${DB_NAME}
+    expose:
+      - ${PG_PORT}
+  
+  nginx:
+    build:
+      context: ./
+      dockerfile: nginx/Dockerfile
     ports:
-      - 8081:8080
-
-  php:
-    image: php:8.1-fpm-alpine
-    volumes:
-      - './src:/var/www/html'
-    ports:
-      - 8080:80
-    depends_on:
-      - db
-    env_file:
-      - .env
-volumes:
-  db:
+      - ${NGINX_PORT}:80
