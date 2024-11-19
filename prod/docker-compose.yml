@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  php:
+    build: 
+      context: ./php
+      dockerfile: Dockerfile
+    ports:
+      - ${PHP_PORT}:${PHP_PORT}
+  
+  db:
+    image: postgres:alpine
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - ${PG_PORT}:${PG_PORT}
+  
+  nginx:
+    build:
+      context: ./
+      dockerfile: nginx/Dockerfile
+    ports:
+      - ${NGINX_PORT}:80
