@@ -7,8 +7,8 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./php:/var/www/html
-    expose:
-      - ${PHP_PORT}
+    ports:
+      - ${PHP_PORT}:${PHP_PORT}
 
   db:
     image: postgres:alpine
@@ -16,8 +16,8 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
-    expose:
-      - ${PG_PORT}
+    ports:
+      - ${PG_PORT}:${PG_PORT}
 
   adminer:
     image: adminer
